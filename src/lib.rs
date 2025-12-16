@@ -1,13 +1,13 @@
-// #![warn(missing_docs, missing_debug_implementations, rust_2018_idioms)]
+#![warn(rust_2018_idioms)]
 
 #[derive(Debug)]
-pub struct StrSplit<'a> {
-    remainder: Option<&'a str>,
-    delimiter: &'a str,
+pub struct StrSplit<'haystack, 'delimiter> {
+    remainder: Option<&'haystack str>,
+    delimiter: &'delimiter str,
 }
 
-impl<'a> StrSplit<'a> {
-    pub fn new(haystack: &'a str, delimiter: &'a str) -> Self {
+impl<'haystack, 'delimiter> StrSplit<'haystack, 'delimiter> {
+    pub fn new(haystack: &'haystack str, delimiter: &'delimiter str) -> Self {
         Self {
             remainder: Some(haystack),
             delimiter,
@@ -15,8 +15,8 @@ impl<'a> StrSplit<'a> {
     }
 }
 
-impl<'a> Iterator for StrSplit<'a> {
-    type Item = &'a str;
+impl<'haystack,'delimiter> Iterator for StrSplit<'haystack, 'delimiter> {
+    type Item = &'haystack str;
     fn next(&mut self) -> Option<Self::Item> {
         let remainder = self.remainder.as_mut()?;
         if let Some(next_delim) = remainder.find(self.delimiter) {
