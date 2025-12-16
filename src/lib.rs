@@ -15,7 +15,7 @@ impl<'haystack, 'delimiter> StrSplit<'haystack, 'delimiter> {
     }
 }
 
-impl<'haystack,'delimiter> Iterator for StrSplit<'haystack, 'delimiter> {
+impl<'haystack, 'delimiter> Iterator for StrSplit<'haystack, 'delimiter> {
     type Item = &'haystack str;
     fn next(&mut self) -> Option<Self::Item> {
         let remainder = self.remainder.as_mut()?;
@@ -29,9 +29,21 @@ impl<'haystack,'delimiter> Iterator for StrSplit<'haystack, 'delimiter> {
     }
 }
 
+pub fn until_char(s: &str, c: char) -> &str {
+    let delim = format!("{}", c);
+    StrSplit::new(s, &delim)
+        .next()
+        .expect("StrSplit always gives at least one result")
+}
+
 #[test]
 fn it_works() {
     let haystack = "a b c d e";
     let letters: Vec<_> = StrSplit::new(haystack, " ").collect();
     assert_eq!(letters, vec!["a", "b", "c", "d", "e"]);
+}
+
+#[test]
+fn until_char_test(){
+    assert_eq!(until_char("Hello world", 'o'), "Hell");
 }
