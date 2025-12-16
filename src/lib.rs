@@ -12,21 +12,19 @@ impl<'a> StrSplit<'a> {
             remainder: Some(haystack),
             delimiter,
         }
-    } 
+    }
 }
 
 impl<'a> Iterator for StrSplit<'a> {
     type Item = &'a str;
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(remainder) = self.remainder{}
-        if let Some(next_delim) = self.remainder.find(self.delimiter) {
-            let until_delimiter = &self.remainder[..next_delim];
-            self.remainder = &self.remainder[(next_delim + self.delimiter.len())..];
+        let remainder = self.remainder.as_mut()?;
+        if let Some(next_delim) = remainder.find(self.delimiter) {
+            let until_delimiter = &remainder[..next_delim];
+            *remainder = &remainder[(next_delim + self.delimiter.len())..];
             Some(until_delimiter)
-        } else if let Some(remainder) = self.remainder.take() {
-            Some(remainder)
         } else {
-            None
+            self.remainder.take()
         }
     }
 }
